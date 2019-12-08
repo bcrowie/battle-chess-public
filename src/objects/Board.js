@@ -26,3 +26,5 @@ class Board {
     return null;
   }
 }
+
+module.exports = Board;

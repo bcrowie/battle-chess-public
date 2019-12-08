@@ -14,7 +14,8 @@ Implement a NodeJS-based command-line variant of chess, called battle chess. Thi
 general rules as chess, but each piece has a specified health and damage. When a piece attempts to
 capture another piece, it must first subtract it's damage from the piece's health. If it reaches 0
 or less, the piece is captured and your piece takes its position. If it doesn't, the damage is
-subtracted from the piece's remaining health. Pieces have the following health and damage:
+subtracted from the piece's remaining health and your piece remains in its current position. Pieces
+have the following health and damage:
 
 | Piece  | Health | Damage |
 | ------ | ------ | ------ |
@@ -29,18 +30,18 @@ Do not implement castling or pawn promotion.
 
 ## User Experience Requirements
 
-- The tools must be a node js package with a `package.json` file
+- The game must be a node js package with a `package.json` file
 - `npm start` should start the game
 - The game must alternate between prompting the player for the white and black side for moves.
 - Responses to the promp take the form of a simplified
   [algebraic notation](<https://en.wikipedia.org/wiki/Algebraic_notation_(chess)>). We simplify it
-  by being explicit on rank and file numbers, and excluding "capture" moves adding an "x" to the
-  square where the capture is being made. For example, `Be5h8` moves bishop from square e5 to h8.
-  Letter and number must be included in both to and from positions. Exclude any additional notation
-  for check, end of game, etc
+  by being explicit on rank and file numbers, and excluding "capture" moves, i.e. adding an "x" to
+  the square where the capture is being made. For example, `Be5h8` moves bishop from square e5 to
+  h8. Letter and number must be included in both to and from positions. Exclude any additional
+  notation for check, end of game, etc
 - You must display the newest state of the board after every move in stdout. How you display it is
-  up to you, but it's suggested to display the positions of each piece, it's color, and it's
-  remaining health somehow.
+  up to you, but it's suggested to display the position of each piece, its color, and its remaining
+  health somehow.
   [Unicode characters for chess pieces](https://en.wikipedia.org/wiki/Chess_symbols_in_Unicode) may
   be of interest here.
 
