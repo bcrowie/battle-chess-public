@@ -4,12 +4,16 @@
   "description": "Chess, with a twist",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/index.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Maushundb/battle-chess.git"
   },
   "author": "Brandon Maushund",
-  "homepage": "https://github.com/Maushundb/battle-chess#readme"
+  "homepage": "https://github.com/Maushundb/battle-chess#readme",
+  "dependencies": {
+    "chalk": "^3.0.0",
+    "promptly": "^3.0.3"
+  }
 }
