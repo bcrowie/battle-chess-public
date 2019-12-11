@@ -33,6 +33,7 @@ Do not implement castling or pawn promotion.
 - The game must be a node js package with a `package.json` file
 - `npm start` should start the game
 - The game must alternate between prompting the player for the white and black side for moves.
+  Illegal or impossible moves should be rejected.
 - Responses to the promp take the form of a simplified
   [algebraic notation](<https://en.wikipedia.org/wiki/Algebraic_notation_(chess)>). We simplify it
   by being explicit on rank and file numbers, and excluding "capture" moves, i.e. adding an "x" to
@@ -44,14 +45,46 @@ Do not implement castling or pawn promotion.
   health somehow.
   [Unicode characters for chess pieces](https://en.wikipedia.org/wiki/Chess_symbols_in_Unicode) may
   be of interest here.
+- If a team's king is put in check, you must notify the user. If a team's king is put in checkmate,
+  you must notify the user and end the game. It is suggested that you notify the user of other
+  important events as well, such as a piece being captured, but not required.
+- Typing "`quit`" should exit the program.
+- Typing "`save`" should save the current state of the game to a file.
+- Running `npm start filename` should start the game, loading state from `filename`
 
 ## Technical Requirements
 
 A skeleton for the top-level game calls has been provided. You are free to use that as is, or change
-anything there to your liking as long as `npm start` starts the game.
+anything there to your liking as long as the above requirements are met.
 
 The design must be object-oriented in nature.
 
 You are free to use [promptly](https://www.npmjs.com/package/promptly) for user input and
 [chalk](https://www.npmjs.com/package/chalk) to print to the console in color. They are already
-installed for you. Please do not use any other npm packages.
+installed for you. You can also install any other packages you want to provide utility, but you main
+classes must be written by you.
+
+For saving and loading, you are free to store the state however you want in the file. However, note
+that reading the file will return a string of it's contents, so utils like
+[`JSON.parse`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse)
+could come in handy.
+
+## Tips
+
+- When first designing classes, try to think about objects in the game and the relationships between
+  them. Will some objects have things in common? Will some objects have differences and some
+  overlapping similarities? This will inform your class structure.
+- For async actions, try to avoid using callbacks and instead use promises with `async` and `await`.
+  The node fs api has an
+  [alternative interface](https://nodejs.org/dist/latest-v10.x/docs/api/fs.html#fs_fs_promises_api)
+  that provides all the regular filesystem APIs are promises under `require(fs).promises`. For
+  example, you can read a file with:
+
+```js
+const fs = require("fs").promises;
+
+(async () => {
+  // create an async context to call await, this is the same as SavedStateLoader.load
+  const contents = await fs.readFile(filePath, "utf8");
+})();
+```
