@@ -1,4 +1,5 @@
 const promptly = require("promptly");
+const chalk = require("chalk");
 const Game = require("./objects/Game");
 const SavedStateLoader = require("./objects/SavedStateLoader");
 
@@ -15,13 +16,26 @@ const [, , savedFileName] = process.argv;
   }
 
   while (true) {
-    const input = await promptly.prompt(`Enter your move, ${game.getCurrentTurn()}:`);
+    if (game._board.isCheck) {
+      game._message = chalk.red("King in checkmate");
+    }
+
+    game.printBoard();
+
+    const input = await promptly.prompt(
+      `Enter your move, ${game.getCurrentTurn()}:`
+    );
 
     if (input === "quit") {
       process.exit(0);
     }
 
-    game.makeMove(input);
+    if (input === "save") {
+      const saver = new SavedStateLoader();
+      saver.save(game);
+    } else {
+      game.makeMove(input);
+    }
 
     if (game.isWon()) {
       console.log(`${game.getWinner()} wins the game!`);
