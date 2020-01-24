@@ -15,22 +15,13 @@ const [, , savedFileName] = process.argv;
   }
 
   while (true) {
-    game.printBoard();
-
-    const input = await promptly.prompt(
-      `Enter your move, ${game.getCurrentTurn()}:`
-    );
+    const input = await promptly.prompt(`Enter your move, ${game.getCurrentTurn()}:`);
 
     if (input === "quit") {
       process.exit(0);
     }
 
-    if (input === "save") {
-      const saver = new SavedStateLoader();
-      saver.save(game);
-    } else {
-      game.makeMove(input);
-    }
+    game.makeMove(input);
 
     if (game.isWon()) {
       console.log(`${game.getWinner()} wins the game!`);
