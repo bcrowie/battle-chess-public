@@ -6,7 +6,7 @@ class SavedStateLoader {
   }
 
   async load() {
-    const data = fs.readFileSync(this._fileName, "utf8");
+    const data = await fs.readFileSync(this._fileName, "utf8");
     const state = JSON.parse(data);
     return state;
   }
@@ -15,7 +15,7 @@ class SavedStateLoader {
     data._board._message = "";
     let saveData = JSON.stringify(data);
     let date = "Battle-Chess.json";
-    fs.writeFile(date, saveData, err => {
+    await fs.writeFile(date, saveData, err => {
       if (err) {
         console.log(err);
       }

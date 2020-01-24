@@ -1,34 +1,29 @@
 const Piece = require("../Piece");
+const { COLORS } = require("../../constants");
 const chalk = require("chalk");
 
 class Rook extends Piece {
-  constructor(health, location, color) {
-    super(health, 1, location, color);
-    this._unicode = this.getUnicode(color);
-    this.getUnicode = this.getUnicode;
-    this.moveSet = this.moveSet;
-    this.attack = this.attack;
+  constructor(location, color) {
+    super(20, 1, location, color);
+    this._unicode = this.setUnicode();
   }
 
-  getUnicode(color) {
-    if (color === "BLACK") {
-      return chalk.bold(`\u265C`);
-    }
-    if (color === "WHITE") {
-      return chalk.bold(`\u2656`);
-    }
+  setUnicode() {
+    return this.getColor() === COLORS.WHITE
+      ? chalk.white(`\u2656`)
+      : chalk.black(`\u265C`);
   }
 
-  moveSet(loc) {
+  _canMove(loc) {
     const x = loc[1];
     const y = loc[0];
-    const from = this._location;
+    const current = this.getLocation();
 
     if (
-      (y === from[0] && x > from[1]) ||
-      (x === from[1] && y > from[0]) ||
-      (y === from[0] && x < from[1]) ||
-      (x === from[1] && y < from[0])
+      (y === current[0] && x > current[1]) ||
+      (x === current[1] && y > current[0]) ||
+      (y === current[0] && x < current[1]) ||
+      (x === current[1] && y < current[0])
     ) {
       return true;
     } else {
@@ -36,20 +31,8 @@ class Rook extends Piece {
     }
   }
 
-  attack(to, from) {
-    const x = to._location[1];
-    const y = to._location[0];
-    const fromLoc = this._location;
-    if (
-      (y === fromLoc[0] && x > fromLoc[1]) ||
-      (x === fromLoc[1] && y > fromLoc[0]) ||
-      (y === fromLoc[0] && x < fromLoc[1]) ||
-      (x === fromLoc[1] && y < fromLoc[0])
-    ) {
-      return true;
-    } else {
-      return false;
-    }
+  _canAttack(to, from) {
+    return this._canMove(to.getLocation()) ? true : false;
   }
 }
 

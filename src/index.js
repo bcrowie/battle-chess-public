@@ -1,5 +1,4 @@
 const promptly = require("promptly");
-const chalk = require("chalk");
 const Game = require("./objects/Game");
 const SavedStateLoader = require("./objects/SavedStateLoader");
 
@@ -16,10 +15,6 @@ const [, , savedFileName] = process.argv;
   }
 
   while (true) {
-    if (game._board.isCheck) {
-      game._message = chalk.red("King in checkmate");
-    }
-
     game.printBoard();
 
     const input = await promptly.prompt(

@@ -1,77 +1,70 @@
 const Piece = require("../Piece");
+const { COLORS } = require("../../constants");
 const chalk = require("chalk");
 
 class Pawn extends Piece {
-  constructor(health, location, color) {
-    super(health, 1, location, color);
-    this._unicode = this.getUnicode(color);
+  constructor(location, color) {
+    super(1, 1, location, color);
+    this._unicode = this._setUnicode();
     this._firstMove = true;
-    this.getUnicode = this.getUnicode;
-    this.moveSet = this.moveSet;
-    this.attack = this.attack;
   }
 
-  // Gets unicode based on parameter passed
-  getUnicode(color) {
-    if (color === "WHITE") {
-      return chalk.bold(`\u2659`);
-    }
-    if (color === "BLACK") {
-      return chalk.bold(`\u265F`);
-    }
-  }
-  // Movement capabilities. loc is an array [x, y] to check against this._location.
-  moveSet(loc) {
-    if (!this._firstMove) {
-      return this.move(loc, 1);
-    } else if (this._firstMove) {
-      this.firstMove = false;
-      return this.move(loc, 2);
-    }
+  _setUnicode() {
+    return this.getColor() === COLORS.WHITE
+      ? chalk.white(`\u2659`)
+      : chalk.black(`\u265F`);
   }
 
-  move(loc, amount) {
+  move(loc) {
+    return !this._firstMove ? this._canMove(loc, 1) : this._canMove(loc, 2);
+  }
+
+  _setFirstMove() {
+    this._firstMove = false;
+    return;
+  }
+
+  _canMove(loc, amount) {
+    const current = this.getLocation();
     if (
-      loc[1] <= this._location[1] + amount &&
-      loc[1] > this._location[1] &&
-      loc[0] === this._location[0] &&
-      this._color === "WHITE"
+      loc[1] <= current[1] + amount &&
+      loc[1] > current[1] &&
+      loc[0] === current[0] &&
+      this.getColor() === COLORS.WHITE
     ) {
-      this._location = loc;
+      this._setFirstMove();
       return true;
     }
     if (
-      loc[1] >= this._location[1] - amount &&
-      loc[1] < this._location[1] &&
-      loc[0] === this._location[0] &&
-      this._color === "BLACK"
+      loc[1] >= current[1] - amount &&
+      loc[1] < current[1] &&
+      loc[0] === current[0] &&
+      this.getColor() === COLORS.BLACK
     ) {
-      this._location = loc;
+      this._setFirstMove();
       return true;
     } else {
       return false;
     }
   }
 
-  attack(to, from) {
-    const toLoc = to._location;
-    const fromLoc = from._location;
+  _canAttack(to, from) {
+    const toLoc = to.getLocation();
+    const fromLoc = from.getLocation();
 
-    if (this._color === "WHITE") {
+    if (this.getColor() === COLORS.WHITE) {
       if (
         toLoc[1] === fromLoc[1] + 1 &&
         (toLoc[0] === fromLoc[0] + 1 || toLoc[0] === fromLoc[0] - 1)
       ) {
-        this._location = to._location;
         return true;
       }
     }
-    if (this._color === "BLACK") {
+    if (this.getColor() === COLORS.BLACK) {
       if (
         toLoc[1] === fromLoc[1] - 1 &&
         (toLoc[0] === fromLoc[0] - 1 || toLoc[0] === fromLoc[0] + 1)
       ) {
-        this._location = to._location;
         return true;
       }
     } else {
