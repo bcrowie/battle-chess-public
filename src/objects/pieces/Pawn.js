@@ -19,7 +19,7 @@ class Pawn extends Piece {
     return !this._firstMove ? this._canMove(loc, 1) : this._canMove(loc, 2);
   }
 
-  _setFirstMove() {
+  setFirstMove() {
     this._firstMove = false;
     return;
   }
@@ -32,7 +32,6 @@ class Pawn extends Piece {
       loc[0] === current[0] &&
       this.getColor() === COLORS.WHITE
     ) {
-      this._setFirstMove();
       return true;
     }
     if (
@@ -41,7 +40,6 @@ class Pawn extends Piece {
       loc[0] === current[0] &&
       this.getColor() === COLORS.BLACK
     ) {
-      this._setFirstMove();
       return true;
     } else {
       return false;

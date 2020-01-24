@@ -19,12 +19,7 @@ class Game {
       typeof to[0] !== "string" ||
       isNaN(to[1]) ||
       typeof from[0] !== "string" ||
-      isNaN(from[1])
-    ) {
-      return this.getBoard().setMessage(STATUS.INVALID, "Invalid input.");
-    }
-
-    if (
+      isNaN(from[1]) ||
       !RANK.indexOf(to[0].toUpperCase()) ||
       !RANK.indexOf(from[0].toUpperCase())
     ) {
@@ -33,12 +28,10 @@ class Game {
 
     if (this.getBoard().movePiece(to, from, this.getCurrentTurn(), move)) {
       this.changeTurn();
-
       if (this.getBoard().isCheckmate()) {
         this.setWinner();
       }
     }
-
     return;
   }
 

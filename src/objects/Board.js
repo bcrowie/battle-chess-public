@@ -66,81 +66,82 @@ class Board {
     }
 
     const getMoveSet = (to, from, space) => {
-      if (!this._isPathObstructed(to, from)) {
-        if (!isNewLocOccupied(to, from)) {
-          if (from.move(to[1]) && from.getColor() === turn) {
-            if (from.getName() === "King") {
-              const kingCopy = Object.assign(
-                Object.create(Object.getPrototypeOf(from)),
-                from
-              );
-              kingCopy.setLocation(to[1]);
-              if (this.isCheck(kingCopy)) {
-                this.setMessage(
-                  STATUS.CHECK,
-                  "This move will put your king in check."
-                );
-                return false;
-              } else {
-                from.setLocation(to[1]);
-                this.setMessage(
-                  STATUS.CONFIRM,
-                  `Moved: ${space.toUpperCase()}`
-                );
-                this.isCheck(from);
-                this.updateBoard(space, from.getUnicode());
-                return true;
-              }
-            } else {
-              from.setLocation(to[1]);
-              this.setMessage(STATUS.CONFIRM, `Moved: ${space.toUpperCase()}`);
-              this.isCheck(from);
-              this.updateBoard(space, from.getUnicode());
-              return true;
-            }
-          } else if (!from.move(to[1])) {
+      const handleMove = (to, from, space) => {
+        if (from.getName() === "King") {
+          const kingCopy = Object.assign(
+            Object.create(Object.getPrototypeOf(from)),
+            from
+          );
+          kingCopy.setLocation(to[1]);
+          if (this.isCheck(kingCopy)) {
             this.setMessage(
-              STATUS.INVALID,
-              `Invalid move: This ${fromLoc.getName()} cannot move there.`
+              STATUS.CHECK,
+              "This move will put your king in check."
             );
             return false;
           }
-        } else if (isNewLocOccupied(to, from) && to.getColor() !== turn) {
-          if (from.attack(to, from)) {
-            handleAttack(to, from, space);
-            return true;
-          } else {
-            // This halts. Need to determine if movement from a to b is obstructed
-            this.setMessage(STATUS.INVALID, `Invalid attack.`);
-            return false;
-          }
-        } else if (
-          isNewLocOccupied(to, from) &&
-          to.getColor() === from.getColor()
-        ) {
-          this.setMessage(
-            STATUS.INVALID,
-            `Invalid move: You cannot attack your own color.`
-          );
-          return false;
-        } else {
-          this.setMessage(
-            STATUS.INVALID,
-            "Cannot move there. Path is not clear."
-          );
         }
-      } else {
-        this.setMessage(STATUS.INVALID, "Invalid move: Path is not clear.");
-      }
+        if (from.getName() === "Pawn") {
+          from.setFirstMove();
+        }
+        from.setLocation(to[1]);
+        this.setMessage(STATUS.CONFIRM, `Moved: ${space.toUpperCase()}`);
+        this.isCheck(from);
+        this.updateBoard(space, from.getUnicode());
+        return true;
+      };
+
+      const checkTurn = (to, from, space) => {
+        if (from.move(to[1]) && from.getColor() === turn) {
+          return handleMove(to, from, space);
+        } else {
+          if (from.getColor() !== turn) {
+            this.setMessage(
+              STATUS.INVALID,
+              `Invalid move: Please select your own color.`
+            );
+          }
+          if (!from.move(to[1])) {
+            this.setMessage(
+              STATUS.INVALID,
+              `Invalid move: This ${from.getName()} cannot move there.`
+            );
+          }
+          return false;
+        }
+      };
+
+      const isMovePossible = (to, from, space) => {
+        if (!this._isPathObstructed(to, from)) {
+          if (!isNewLocOccupied(to, from)) {
+            return checkTurn(to, from, space);
+          } else if (isNewLocOccupied(to, from) && to.getColor() !== turn) {
+            if (from.attack(to, from)) {
+              handleAttack(to, from, space);
+              return true;
+            } else {
+              this.setMessage(STATUS.INVALID, `Invalid attack.`);
+              return false;
+            }
+          }
+        } else {
+          this.setMessage(STATUS.INVALID, "Invalid move: Path is not clear.");
+        }
+      };
+      const confirmPiece = (to, from, space) => {
+        if (space[0].toUpperCase() === from.getName()[0]) {
+          return isMovePossible(to, from, space);
+        } else {
+          this.setMessage(STATUS.CHECK, `Invalid: Wrong piece specified.`);
+          return false;
+        }
+      };
+      return confirmPiece(to, from, space);
     };
 
     const isNewLocOccupied = (to, from) => {
       if (isPiecePresent(to, from)) {
-        if (to[0] === null) {
-          return false;
-        } else {
-          return true;
-        }
+        return to[0] !== null;
       }
     };
 
@@ -148,10 +149,7 @@ class Board {
       if (to !== null && from.getColor() === turn) {
         return true;
       } else {
-        this.setMessage(
-          STATUS.INVALID,
-          `Invalid move: Please select your own color.`
-        );
+        this.setMessage(STATUS.INVALID, `Invalid selection.`);
         return false;
       }
     };
@@ -159,7 +157,6 @@ class Board {
     const handleAttack = (to, from, space) => {
       to.setHealth(from.getDamage());
       const captured = to.getHealth() < 1 ? to : false;
-
       if (captured) {
         from.setLocation(to.getLocation());
         to.setLocation([0, 0]);
@@ -303,10 +300,11 @@ class Board {
 
     Object.entries(this.getPieces()).forEach(([key, value]) => {
       Object.entries(value).forEach(([k, v]) => {
-        if (coords[0] === v.getLocation()[0]) {
-          if (coords[1] == v.getLocation()[1]) {
-            result = v;
-          }
+        if (
+          coords[0] === v.getLocation()[0] &&
+          coords[1] == v.getLocation()[1]
+        ) {
+          result = v;
         }
       });
     });
@@ -332,33 +330,35 @@ class Board {
       // hehehe.. checkCheck.
       let checkCheck = pieces => {
         Object.entries(pieces).forEach(([key, value]) => {
-          if (value.getHealth() > 0) {
-            if (!this._isPathObstructed(piece, value)) {
-              if (value.attack(piece, value)) {
-                result = true;
-              }
-            }
+          if (
+            value.getHealth() > 0 &&
+            !this._isPathObstructed(piece, value) &&
+            value.attack(piece, value)
+          ) {
+            result = true;
           }
         });
       };
       color === COLORS.WHITE
         ? checkCheck(this.getPieces().BLACK)
         : checkCheck(this.getPieces().WHITE);
-
       return result;
     } else if (piece.getName() !== "King") {
       const to = [null, kingLoc];
 
       if (!this._isPathObstructed(to, piece)) {
+        const sendCheckMessage = color => {
+          this.setMessage(STATUS.CHECK, `Warning: ${color} King is in check.`);
+        };
         if (color === COLORS.WHITE) {
           if (piece.attack(this.getPieces().BLACK.King, piece)) {
-            this.setMessage(STATUS.CHECK, "Warning: Black King is in check.");
+            sendCheckMessage(COLORS.BLACK);
             return true;
           }
         }
         if (color === COLORS.BLACK) {
           if (piece.attack(this.getPieces().WHITE.King, piece)) {
-            this.setMessage(STATUS.CHECK, "Warning: White King is in check.");
+            sendCheckMessage(COLORS.WHITE);
             return true;
           }
         }
@@ -382,39 +382,19 @@ class Board {
     // Unfortuantely I was unable to find a more efficient solution for checking for checkmate.
     const checkCheckmate = copy => {
       const kingLoc = copy.getLocation();
-      copy.setLocation([kingLoc[0] - 1, kingLoc[1]]);
-      if (this.isCheck(copy)) {
-        copy.setLocation([kingLoc[0], kingLoc[1] - 1]);
-        if (this.isCheck(copy)) {
-          copy.setLocation([kingLoc[0] + 1, kingLoc[1]]);
-          if (this.isCheck(copy)) {
-            copy.setLocation([kingLoc[0] + 1, kingLoc[1]]);
-            if (this.isCheck(copy)) {
-              copy.setLocation([kingLoc[0], kingLoc[1] + 1]);
-              if (this.isCheck(copy)) {
-                copy.setLocation([kingLoc[0], kingLoc[1] + 1]);
-                if (this.isCheck(copy)) {
-                  copy.setLocation([kingLoc[0] - 1, kingLoc[1]]);
-                  if (this.isCheck(copy)) {
-                    copy.setLocation([kingLoc[0] - 1, kingLoc[1]]);
-                    if (this.isCheck(copy)) {
-                      return true;
-                    }
-                  }
-                }
-              }
-            }
-          }
+
+      let isCheck = null;
+      for (let x = -1; x < 2; x++) {
+        for (let y = -1; y < 2; y++) {
+          copy.setLocation(kingLoc[0] + x, kingLoc[1] + y);
+          isCheck = isCheck || this.isCheck(copy);
         }
-      } else {
-        return null;
       }
     };
-
-    if (checkCheckmate(whiteCopy)) {
+    if (checkCheckmate(whiteCopy) || whiteCopy.getHealth() < 1) {
       return COLORS.WHITE;
     }
-    if (checkCheckmate(blackCopy)) {
+    if (checkCheckmate(blackCopy) || blackCopy.getHealth() < 1) {
       return COLORS.BLACK;
     }
   }
@@ -467,12 +447,9 @@ class Board {
       board.E8 = this._pieces.BLACK.King.getUnicode();
       board.D8 = this._pieces.BLACK.Queen.getUnicode();
     };
-
-    // loop to instantiate pieces for each color
     Object.entries(COLORS).forEach(([key]) => {
       const x = key === COLORS.WHITE ? 1 : 8;
       const y = key === COLORS.WHITE ? 2 : 7;
-
       armies.push(
         (key = {
           PawnOne: new Pawn([1, y], key),
@@ -503,8 +480,11 @@ class Board {
     if (state) {
       const loadedPieces = state._board._pieces;
       board = state._board._gameBoard;
+      this._captures = state._captures;
+      this._checkmate = state._checkmate;
+      this._message = state._message;
 
-      const loadData = piece => {
+      const loadPieces = piece => {
         for (let i in piece) {
           if (piece[i] === this._pieces[i]) {
             this._pieces[i] = piece[i];
@@ -515,7 +495,7 @@ class Board {
         }
       };
 
-      loadData(loadedPieces);
+      loadPieces(loadedPieces);
     } else {
       setBoardDefaults();
     }
@@ -571,15 +551,11 @@ class Board {
   }
 
   setMessage(type, message) {
-    if (type === STATUS.CONFIRM) {
-      this._message = chalk.green(message);
-    }
-    if (type === STATUS.INVALID) {
-      this._message = chalk.red(message);
-    }
-    if (type === STATUS.CHECK) {
-      this._message = chalk.yellowBright.bgRed(message);
-    }
+    return type === STATUS.CONFIRM
+      ? (this._message = chalk.green(message))
+      : type === STATUS.INVALID
+      ? (this._message = chalk.red(message))
+      : (this._message = chalk.yellowBright.bgRed(message));
   }
 }
 
