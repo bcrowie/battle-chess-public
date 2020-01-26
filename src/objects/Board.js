@@ -1,4 +1,5 @@
 const { COLORS, RANK, FILE, STATUS } = require("../constants");
+const { getRank, kingCopy } = require("../utils");
 const chalk = require("chalk");
 const Pawn = require("./pieces/Pawn");
 const Rook = require("./pieces/Rook");
@@ -68,12 +69,10 @@ class Board {
     const getMoveSet = (to, from, space) => {
       const handleMove = (to, from, space) => {
         if (from.getName() === "King") {
-          const kingCopy = Object.assign(
-            Object.create(Object.getPrototypeOf(from)),
-            from
-          );
-          kingCopy.setLocation(to[1]);
-          if (this.isCheck(kingCopy)) {
+          const kingTest = kingCopy(from);
+          kingTest.setLocation(to[1]);
+
+          if (this.isCheck(kingTest)) {
             this.setMessage(
               STATUS.CHECK,
               "This move will put your king in check."
@@ -81,9 +80,11 @@ class Board {
             return false;
           }
         }
+
         if (from.getName() === "Pawn") {
           from.setFirstMove();
         }
+
         from.setLocation(to[1]);
         this.setMessage(STATUS.CONFIRM, `Moved: ${space.toUpperCase()}`);
         this.isCheck(from);
@@ -101,12 +102,14 @@ class Board {
               `Invalid move: Please select your own color.`
             );
           }
+
           if (!from.move(to[1])) {
             this.setMessage(
               STATUS.INVALID,
               `Invalid move: This ${from.getName()} cannot move there.`
             );
           }
+
           return false;
         }
       };
@@ -132,7 +135,7 @@ class Board {
         if (space[0].toUpperCase() === from.getName()[0]) {
           return isMovePossible(to, from, space);
         } else {
-          this.setMessage(STATUS.CHECK, `Invalid: Wrong piece specified.`);
+          this.setMessage(STATUS.INVALID, `Invalid: Wrong piece specified.`);
           return false;
         }
       };
@@ -302,7 +305,7 @@ class Board {
       Object.entries(value).forEach(([k, v]) => {
         if (
           coords[0] === v.getLocation()[0] &&
-          coords[1] == v.getLocation()[1]
+          coords[1] === v.getLocation()[1]
         ) {
           result = v;
         }
@@ -327,7 +330,7 @@ class Board {
 
     if (piece.getName() === "King") {
       let result;
-      // hehehe.. checkCheck.
+
       let checkCheck = pieces => {
         Object.entries(pieces).forEach(([key, value]) => {
           if (
@@ -339,6 +342,7 @@ class Board {
           }
         });
       };
+
       color === COLORS.WHITE
         ? checkCheck(this.getPieces().BLACK)
         : checkCheck(this.getPieces().WHITE);
@@ -350,17 +354,14 @@ class Board {
         const sendCheckMessage = color => {
           this.setMessage(STATUS.CHECK, `Warning: ${color} King is in check.`);
         };
-        if (color === COLORS.WHITE) {
-          if (piece.attack(this.getPieces().BLACK.King, piece)) {
-            sendCheckMessage(COLORS.BLACK);
-            return true;
-          }
-        }
-        if (color === COLORS.BLACK) {
-          if (piece.attack(this.getPieces().WHITE.King, piece)) {
-            sendCheckMessage(COLORS.WHITE);
-            return true;
-          }
+
+        color === COLORS.WHITE
+          ? (color = COLORS.BLACK)
+          : (color = COLORS.WHITE);
+
+        if (piece.attack(this.getPieces()[color].King, piece)) {
+          sendCheckMessage(color);
+          return true;
         }
       } else {
         return null;
@@ -370,17 +371,10 @@ class Board {
 
   // Return either WHITE or BLACK if their king is in checkmate, null otherwise
   isCheckmate() {
-    const whiteCopy = Object.assign(
-      Object.create(Object.getPrototypeOf(this.getPieces().WHITE.King)),
-      this.getPieces().WHITE.King
-    );
-    const blackCopy = Object.assign(
-      Object.create(Object.getPrototypeOf(this.getPieces().BLACK.King)),
-      this.getPieces().BLACK.King
-    );
+    const whiteCopy = kingCopy(this.getPieces().WHITE.King);
+    const blackCopy = kingCopy(this.getPieces().BLACK.King);
 
-    // Unfortuantely I was unable to find a more efficient solution for checking for checkmate.
-    const checkCheckmate = copy => {
+    const findCheckmate = copy => {
       const kingLoc = copy.getLocation();
 
       let isCheck = null;
@@ -391,15 +385,15 @@ class Board {
         }
       }
     };
-    if (checkCheckmate(whiteCopy) || whiteCopy.getHealth() < 1) {
+
+    if (findCheckmate(whiteCopy) || whiteCopy.getHealth() < 1) {
       return COLORS.WHITE;
     }
-    if (checkCheckmate(blackCopy) || blackCopy.getHealth() < 1) {
+    if (findCheckmate(blackCopy) || blackCopy.getHealth() < 1) {
       return COLORS.BLACK;
     }
   }
 
-  // Will refactor this into cleaner code
   _createBoard(state) {
     let board = {};
     let armies = [];
@@ -488,7 +482,7 @@ class Board {
         for (let i in piece) {
           if (piece[i] === this._pieces[i]) {
             this._pieces[i] = piece[i];
-            return loadData(piece[i]);
+            return loadPieces(piece[i]);
           } else {
             return piece;
           }
@@ -503,9 +497,10 @@ class Board {
   }
 
   updateBoard(space, unicode, capture) {
-    const to = space.slice(3).toUpperCase() + space.slice(5);
-    const from = space.slice(1, 2).toUpperCase() + space.slice(2, 3);
+    const to = getRank(space, "to");
+    const from = getRank(space, "from");
     const board = this.getGameBoard();
+
     if (capture) {
       this.setCaptures(capture);
     }
