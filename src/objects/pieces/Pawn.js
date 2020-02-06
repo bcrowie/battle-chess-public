@@ -3,8 +3,8 @@ const { COLORS } = require("../../constants");
 const chalk = require("chalk");
 
 class Pawn extends Piece {
-  constructor(location, color) {
-    super(1, 1, location, color);
+  constructor(location, color, startLoc) {
+    super(1, 1, location, color, startLoc);
     this._unicode = this._setUnicode();
     this._firstMove = true;
   }

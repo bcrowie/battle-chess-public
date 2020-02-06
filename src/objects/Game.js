@@ -1,4 +1,4 @@
-/* eslint disable */
+// eslint disable
 const { COLORS, STATUS } = require("../constants");
 const { checkInput } = require("../utils");
 const chalk = require("chalk");
@@ -18,17 +18,19 @@ class Game {
     const board = this.getBoard();
 
     if (checkInput(to, from, move)) {
-      return board.setMessage(STATUS.INVALID, "Invalid input.");
+      board.setMessage(STATUS.INVALID, "Invalid input.");
+      return false;
     } else {
       if (board.movePiece(to, from, this.getCurrentTurn(), move)) {
         this.changeTurn();
+        console.log("Changed turn");
         if (board.isCheckmate()) {
           this.setWinner();
+          return true;
         }
+        return true;
       }
     }
-
-    return;
   }
 
   changeTurn() {
@@ -65,10 +67,11 @@ class Game {
     const board = this.getBoard().getGameBoard();
     const inv = chalk.bgGrey;
 
-    let lines = process.stdout.getWindowSize()[1];
-    for(let i = 0; i < lines; i++) {
-        console.log('\r\n');
-    }
+    // let lines = process.stdout.getWindowSize()[1];
+    // for(let i = 0; i < lines; i++) {
+    //   // console.log('\r\n')
+    // }
+
 
     console.log(`Battle-Chess
                       ${inv(`     `)}     ${inv(`     `)}     ${inv(`     `)}     ${inv(`     `)}     
@@ -98,7 +101,7 @@ Rook: ${this.getBoard().getPieces().WHITE.RookTwo.getHealth()}       D ${inv(`  
 Captures:          1    2    3    4    5    6    7    8         Captures:
 ${this._board.getCaptures(COLORS.WHITE).join("")}                                         ${this._board.getCaptures(COLORS.BLACK).join("")} 
 ${this.getBoard().getMessage()}`)
-    return
+    return true
   }
 }
 

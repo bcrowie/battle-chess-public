@@ -10,9 +10,7 @@ const [, , savedFileName] = process.argv;
     const loader = new SavedStateLoader(savedFileName);
     const state = await loader.load();
     game = new Game(state);
-  } else {
-    game = new Game();
-  }
+  } else game = new Game();
 
   while (true) {
     game.printBoard();
@@ -21,16 +19,12 @@ const [, , savedFileName] = process.argv;
       `Enter your move, ${game.getCurrentTurn()}:`
     );
 
-    if (input === "quit") {
-      process.exit(0);
-    }
+    if (input === "quit") process.exit(0);
 
     if (input === "save") {
       const saver = new SavedStateLoader();
       saver.save(game);
-    } else {
-      game.makeMove(input);
-    }
+    } else game.makeMove(input);
 
     if (game.isWon()) {
       console.log(`${game.getWinner()} wins the game!`);

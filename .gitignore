@@ -3,6 +3,8 @@
 
 # node.js
 node_modules/
+.eslintrc.json
+jsconfig.json
 npm-debug.log
 yarn-error.log
 

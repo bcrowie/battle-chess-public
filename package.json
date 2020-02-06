@@ -4,7 +4,8 @@
   "description": "Chess, with a twist",
   "main": "index.js",
   "scripts": {
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,13 @@
   "dependencies": {
     "chalk": "^3.0.0",
     "promptly": "^3.0.3"
+  },
+  "devDependencies": {
+    "@types/jest": "^25.1.1",
+    "eslint": "^6.8.0",
+    "jest": "^25.1.0"
+  },
+  "eslintConfig": {
+    "extends": "eslint:recommended"
   }
 }

@@ -12,14 +12,39 @@ class SavedStateLoader {
   }
 
   async save(data) {
-    data._board._message = "";
-    let saveData = JSON.stringify(data);
-    let date = "Battle-Chess.json";
-    await fs.writeFile(date, saveData, err => {
-      if (err) {
-        console.log(err);
-      }
+    data._board._message = "Saved";
+    const saveData = JSON.stringify(data);
+    const fileName = `Battle-Chess ${this.getTimeString()}.json`;
+    await fs.writeFile(fileName, saveData, err => {
+      if (err) throw new Error();
     });
+  }
+
+  getTimeString() {
+    const today = new Date();
+
+    const getDate = () => {
+      const date =
+        today.getFullYear() +
+        "-" +
+        (today.getMonth() + 1) +
+        "-" +
+        today.getDate();
+      return date;
+    };
+
+    const getTime = () => {
+      const hour = today.getHours();
+      const min =
+        today.getMinutes() < 10 ? "0" + today.getMinutes() : today.getMinutes();
+      const sec =
+        today.getSeconds() < 10 ? "0" + today.getSeconds() : today.getSeconds();
+      const time = hour + "." + min + "." + sec;
+      return time;
+    };
+
+    const date = getDate() + " " + getTime();
+    return date;
   }
 }
 

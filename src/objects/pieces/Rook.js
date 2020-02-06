@@ -3,8 +3,8 @@ const { COLORS } = require("../../constants");
 const chalk = require("chalk");
 
 class Rook extends Piece {
-  constructor(location, color) {
-    super(20, 1, location, color);
+  constructor(location, color, startLoc) {
+    super(20, 1, location, color, startLoc);
     this._unicode = this.setUnicode();
   }
 

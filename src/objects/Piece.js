@@ -1,9 +1,10 @@
 class Piece {
-  constructor(health, damage, location, color) {
+  constructor(health, damage, location, color, startLoc) {
     this._color = color;
     this._damage = damage;
     this._health = health;
     this._location = location;
+    this._startLoc = startLoc;
     this._unicode = this.getUnicode(color);
   }
 
@@ -23,6 +24,10 @@ class Piece {
 
   setHealth(damage) {
     this._health = this._health - damage;
+  }
+
+  getStartLoc() {
+    return this._startLoc;
   }
 
   getLocation() {
@@ -51,6 +56,7 @@ class Piece {
   }
 
   _canMove() {
+    console.log(this._startLoc);
     throw new Error("Cannot instantiate abstract method");
   }
 
