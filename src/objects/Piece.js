@@ -36,7 +36,7 @@ class Piece {
 
   setLocation(loc) {
     this._location = loc;
-    return;
+    return true;
   }
 
   getName() {
@@ -56,7 +56,6 @@ class Piece {
   }
 
   _canMove() {
-    console.log(this._startLoc);
     throw new Error("Cannot instantiate abstract method");
   }
 

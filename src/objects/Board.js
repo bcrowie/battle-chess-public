@@ -153,8 +153,9 @@ class Board {
     let toLoc = to[1];
     let fromLoc = from.getLocation();
 
-    if (to instanceof Object && !(to instanceof Array))
+    if (to instanceof Object && !(to instanceof Array)) {
       toLoc = to.getLocation();
+    }
 
     const testPiece = from => {
       // Right
@@ -241,7 +242,13 @@ class Board {
     } else if (from.getName() === "Bishop") {
       return testBishop(from);
     } else if (from.getName() === "Queen") {
-      return testBishop(from) === from || testPiece(from) === from;
+      if (!testBishop(from)) {
+        return false;
+      } else if (!testPiece(from)) {
+        return false;
+      } else {
+        return from;
+      }
     } else if (from.getName() === "King") {
       const test = testLoc(this._getPieceAt(toLoc));
       let color = from.getColor();
@@ -410,9 +417,11 @@ class Board {
       const setUnicode = pieces => {
         Object.entries(pieces).forEach(([key, value]) => {
           for (let i in value) {
-            if (board.hasOwnProperty(value[i].getStartLoc()))
+            if (board.hasOwnProperty(value[i].getStartLoc())) {
               board[value[i].getStartLoc()] = value[i].getUnicode();
-            else return setUnicode(piece[i]);
+            } else {
+              return setUnicode(piece[i]);
+            }
           }
         });
         return board;
@@ -490,8 +499,11 @@ class Board {
     };
 
     if (createArmies()) {
-      if (state) loadSaveState(state);
-      else setBoardDefaults();
+      if (state) {
+        loadSaveState(state);
+      } else {
+        setBoardDefaults();
+      }
     }
     return board;
   }

@@ -31,7 +31,7 @@ class Rook extends Piece {
     }
   }
 
-  _canAttack(to, from) {
+  _canAttack(to) {
     return this._canMove(to.getLocation()) ? true : false;
   }
 }

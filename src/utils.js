@@ -2,6 +2,10 @@ const { RANK } = require("./constants");
 
 module.exports = {
   checkInput: (to, from, move) => {
+    if (!to || !from || !move) {
+      return true;
+    }
+
     return (
       typeof to[0] !== "string" ||
       isNaN(to[1]) ||
@@ -9,7 +13,8 @@ module.exports = {
       isNaN(from[1]) ||
       !RANK.indexOf(to[0].toUpperCase()) ||
       !RANK.indexOf(from[0].toUpperCase()) ||
-      move.length > 5
+      move.length !== 5 ||
+      move.indexOf("0") !== -1
     );
   },
   getRank: (space, loc) => {

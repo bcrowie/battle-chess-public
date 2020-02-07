@@ -23,7 +23,6 @@ class Game {
     } else {
       if (board.movePiece(to, from, this.getCurrentTurn(), move)) {
         this.changeTurn();
-        console.log("Changed turn");
         if (board.isCheckmate()) {
           this.setWinner();
           return true;
@@ -67,12 +66,15 @@ class Game {
     const board = this.getBoard().getGameBoard();
     const inv = chalk.bgGrey;
 
-    // let lines = process.stdout.getWindowSize()[1];
-    // for(let i = 0; i < lines; i++) {
-    //   // console.log('\r\n')
+    // function addBlankLines(){
+    //   let lines = process.stdout.getWindowSize()[1];
+    //   for(let i = 0; i < lines; i++) {
+    //     console.log('\r\n')
+    //   }
     // }
 
-
+    // addBlankLines()
+    
     console.log(`Battle-Chess
                       ${inv(`     `)}     ${inv(`     `)}     ${inv(`     `)}     ${inv(`     `)}     
 White          A   ${board.A1}  ${inv(`  ${board.A2}  `)}  ${board.A3}  ${inv(`  ${board.A4}  `)}  ${board.A5}  ${inv(`  ${board.A6}  `)}  ${board.A7}  ${inv(`  ${board.A8}  `)}          Black
