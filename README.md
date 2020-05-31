@@ -1,8 +1,8 @@
-# Battle Chess Spec
+# Battle Chess
 
 ## About
 
-Battle-Chess is a command-line chess game written in Javascript for NodeJS. Battle-Chess has the same general rules as chess, however each piece has it's own health and damage. When a piece attempts to capture another, the health of the piece being attacked is subtracted by the damage of the attacking piece. The following specifies each piece's health and damage:
+Battle Chess is a command-line chess game written in Javascript for NodeJS. Battle Chess has the same general rules as chess, however each piece has it's own health and damage. When a piece attempts to capture another, the health of the piece being attacked is subtracted by the damage of the attacking piece. The following specifies each piece's health and damage:
 
 | Piece  | Health | Damage |
 | ------ | ------ | ------ |
