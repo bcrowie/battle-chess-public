@@ -2,7 +2,7 @@
 const { COLORS, STATUS } = require("../constants");
 const { checkInput } = require("../utils");
 const chalk = require("chalk");
-const Board = require("./board");
+const Board = require("./Board");
 
 class Game {
   constructor(state) {
