@@ -63,7 +63,7 @@ class Game {
 
   // prettier-ignore
   printBoard() {
-    console.clear()
+    console.clear() 
     const board = this.getBoard().getGameBoard();
     const inv = chalk.bgGrey;
 
