@@ -1,5 +1,6 @@
 const promptly = require("promptly");
 const Game = require("./objects/Game");
+const Menu = require('./objects/Menu');
 const SavedStateLoader = require("./objects/SavedStateLoader");
 
 const [, , savedFileName] = process.argv;
@@ -15,24 +16,26 @@ const [, , savedFileName] = process.argv;
   }
 
   while (true) {
-    game.printBoard();
+    const menu = new Menu();
+    menu.printMenu()
+    // game.printBoard();
 
-    const input = await promptly.prompt(
-      `Enter your move, ${game.getCurrentTurn()}:`
-    );
+    // const input = await promptly.prompt(
+    //   `Enter your move, ${game.getCurrentTurn()}:`
+    // );
 
-    if (input === "quit") process.exit(0);
+    // if (input === "quit") process.exit(0);
 
-    if (input === "save") {
-      const saver = new SavedStateLoader();
-      saver.save(game);
-    } else {
-      game.makeMove(input);
-    }
+    // if (input === "save") {
+    //   const saver = new SavedStateLoader();
+    //   saver.save(game);
+    // } else {
+    //   game.makeMove(input);
+    // }
 
-    if (game.isWon()) {
-      console.log(`${game.getWinner()} wins the game!`);
-      process.exit(0);
-    }
+    // if (game.isWon()) {
+    //   console.log(`${game.getWinner()} wins the game!`);
+    //   process.exit(0);
+    // }
   }
 })();

@@ -1,5 +1,6 @@
 const chalk = require('chalk');
 const Settings = require('./Settings');
+const promptly = require('promptly');
 
 class Menu {
     constructor() {
@@ -25,7 +26,18 @@ class Menu {
         return this._currentSelection;
     }
 
-    printMenu() {
+    async processKeypress() {
+        process.stdin.setRawMode(true)
+        process.stdin.resume()
+        process.stdin.setEncoding('utf-8')
+
+        return new Promise(resolve => process.stdin.on('data', key => {
+            process.stdout.write(key)
+            resolve()
+        }))
+    }
+
+    async printMenu() {
         console.clear();
         console.log(`
 
@@ -57,6 +69,7 @@ class Menu {
         
         
         `)
+        await this.processKeypress()
     }
 }
 
