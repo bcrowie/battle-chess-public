@@ -15,6 +15,10 @@ class Board {
     this._pieces;
     this._captures;
     this._checkmate = null;
+    this._colors = {
+      dark: chalk.bgBlack,
+      light: chalk.bgWhite
+    }
   }
 
   movePiece(to, from, turn, space) {
@@ -561,6 +565,17 @@ class Board {
       : type === STATUS.INVALID
       ? (this._message = chalk.red(message))
       : (this._message = chalk.yellowBright.bgRed(message));
+  }
+
+  setColors(dark, light) {
+    this._colors = {
+      dark,
+      light
+    }
+  }
+
+  getColors() {
+    return this._colors;
   }
 }
 
