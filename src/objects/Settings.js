@@ -11,7 +11,7 @@ class Settings {
     }
 
     getCurrentColors() {
-        return this._colors;
+        return this._currentColors;
     }
 
     setCurrentColors(dark, light) {
@@ -27,7 +27,34 @@ class Settings {
 
     printSettings() {
         console.clear()
-        console.log()
+        console.log(`
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        `)
     }
 }
 
