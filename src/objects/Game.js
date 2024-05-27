@@ -1,8 +1,8 @@
 // eslint disable
-const { COLORS, STATUS } = require("../constants");
-const { checkInput } = require("../utils");
-const chalk = require("chalk");
-const Board = require("./Board");
+import  {COLORS, STATUS} from "../constants.js";
+import { checkInput } from "../utils.js";
+import chalk from "chalk";
+import Board from "./Board.js";
 
 class Game {
   constructor(state) {
@@ -101,4 +101,4 @@ ${this.getBoard().getMessage()}`)
   }
 }
 
-module.exports = Game;
+export default Game;

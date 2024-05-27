@@ -1,6 +1,6 @@
-const chalk = require('chalk');
-const Settings = require('./Settings');
-
+import chalk from 'chalk';
+import Settings from './Settings.js';
+import promptly from 'promptly'
 
 class Menu {
     constructor() {
@@ -74,4 +74,4 @@ class Menu {
     }
 }
 
-module.exports = Menu;
+export default Menu;

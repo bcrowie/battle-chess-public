@@ -1,7 +1,6 @@
-const promptly = require("promptly");
-const Game = require("./objects/Game");
-const Menu = require('./objects/Menu');
-const SavedStateLoader = require("./objects/SavedStateLoader");
+import Game from './objects/Game.js';
+import Menu from './objects/Menu.js';
+import SavedStateLoader from './objects/SavedStateLoader.js';
 
 const [, , savedFileName] = process.argv;
 

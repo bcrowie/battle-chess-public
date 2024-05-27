@@ -1,6 +1,6 @@
-const Piece = require("../Piece");
-const { COLORS } = require("../../constants");
-const chalk = require("chalk");
+import Piece from '../Piece.js'
+import { COLORS } from '../../constants.js'
+import chalk from 'chalk'
 
 class Rook extends Piece {
   constructor(location, color, startLoc) {
@@ -36,4 +36,4 @@ class Rook extends Piece {
   }
 }
 
-module.exports = Rook;
+export default Rook;

@@ -1,5 +1,5 @@
-const chalk = require('chalk');
-const _colors = require('../colors');
+import chalk from 'chalk'
+import { COLORS } from '../colors.js'
 
 class Settings {
     constructor() {
@@ -7,7 +7,7 @@ class Settings {
             dark: chalk.bgBlack,
             light: chalk.bgWhite
         }
-        this._colorOptions = _colors;
+        this._colorOptions = COLORS;
     }
 
     getCurrentColors() {
@@ -58,4 +58,4 @@ class Settings {
     }
 }
 
-module.exports = Settings;
+export default Settings;

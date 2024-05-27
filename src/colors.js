@@ -1,6 +1,6 @@
-const chalk = require('chalk');
+import chalk from 'chalk';
 
-module.exports = {
+export const COLORS = {
     "Blue": chalk.bgBlue,
     "Light Blue": chalk.bgBlueBright,
     "Red": chalk.bgRed,
