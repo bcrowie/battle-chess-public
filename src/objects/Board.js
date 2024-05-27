@@ -1,12 +1,12 @@
-const { COLORS, RANK, FILE, STATUS } = require("../constants");
-const { getRank, kingCopy } = require("../utils");
-const chalk = require("chalk");
-const Pawn = require("./pieces/Pawn");
-const Rook = require("./pieces/Rook");
-const Knight = require("./pieces/Knight");
-const Bishop = require("./pieces/Bishop");
-const Queen = require("./pieces/Queen");
-const King = require("./pieces/King");
+import { COLORS, RANK, FILE, STATUS } from '../constants.js'
+import { getRank, kingCopy } from '../utils.js';
+import chalk from 'chalk';
+import Pawn from './pieces/Pawn.js';
+import Rook from './pieces/Rook.js';
+import Knight from './pieces/Knight.js';
+import Bishop from './pieces/Bishop.js';
+import Queen from './pieces/Queen.js';
+import King from './pieces/King.js';
 
 class Board {
   constructor(state) {
@@ -579,4 +579,4 @@ class Board {
   }
 }
 
-module.exports = Board;
+export default Board;

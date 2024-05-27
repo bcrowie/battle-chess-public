@@ -1,4 +1,4 @@
-const fs = require("fs");
+import fs from 'fs'
 
 class SavedStateLoader {
   constructor(fileName) {
@@ -48,4 +48,4 @@ class SavedStateLoader {
   }
 }
 
-module.exports = SavedStateLoader;
+export default SavedStateLoader;

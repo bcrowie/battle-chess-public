@@ -1,5 +1,5 @@
-const chalk = require('chalk');
-const _colors = require('../colors');
+import chalk from 'chalk'
+import _colors from '../colors.js'
 
 class Settings {
     constructor() {
@@ -58,4 +58,4 @@ class Settings {
     }
 }
 
-module.exports = Settings;
+export default Settings;
