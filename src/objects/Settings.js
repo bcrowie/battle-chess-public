@@ -1,5 +1,5 @@
 const chalk = require('chalk');
-const _colors = require('../colors.');
+const _colors = require('../colors');
 
 class Settings {
     constructor() {
