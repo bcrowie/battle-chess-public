@@ -1,6 +1,6 @@
 const chalk = require('chalk');
 const Settings = require('./Settings');
-const promptly = require('promptly');
+
 
 class Menu {
     constructor() {
@@ -21,7 +21,7 @@ class Menu {
     getOptions() {
         return this._options;
     }
-
+  
     getCurrentSelection() {
         return this._currentSelection;
     }
@@ -48,6 +48,7 @@ class Menu {
         
         
         
+
 
 
 
