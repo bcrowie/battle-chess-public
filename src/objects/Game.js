@@ -4,7 +4,7 @@ import { checkInput } from "../utils.js";
 import chalk from "chalk";
 import Board from "./Board.js";
 
-export class Game {
+class Game {
   constructor(state) {
     this._board = new Board(state);
     this._currentTurn = state ? state._currentTurn : COLORS.WHITE;
@@ -101,3 +101,4 @@ ${this.getBoard().getMessage()}`)
   }
 }
 
+export default Game;

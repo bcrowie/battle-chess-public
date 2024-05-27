@@ -1,5 +1,5 @@
 import chalk from 'chalk'
-import _colors from '../colors.js'
+import { COLORS } from '../colors.js'
 
 class Settings {
     constructor() {
@@ -7,7 +7,7 @@ class Settings {
             dark: chalk.bgBlack,
             light: chalk.bgWhite
         }
-        this._colorOptions = _colors;
+        this._colorOptions = COLORS;
     }
 
     getCurrentColors() {
